@@ -19,19 +19,24 @@ if st.button("Predict"):
         "https://fastapi-churn-isid.onrender.com/predict",
         json=data
     )
+    st.write("Status", response.status_code)
+    st.write("Response:", response.text)
+    
+    if response.status_code==200:
+       result = response.json()
 
-    result = response.json()
+       st.subheader("Sonuç")
 
-    st.subheader("Sonuç")
+       st.write(f"Prediction: {result['prediction']}")
+       st.write(f"Probability: % {result['churn_probability']:.2f}")
 
-    st.write(f"Prediction: {result['prediction']}")
-    st.write(f"Probability: % {result['churn_probability']:.2f}")
+       segment = result["segment"]
 
-    segment = result["segment"]
-
-    if segment == "High Risk":
+       if segment == "High Risk":
         st.error(segment)
-    elif segment == "Medium":
+       elif segment == "Medium":
         st.warning(segment)
-    else:
+       else:
         st.success(segment)
+    else:
+      st.error("Api calismiyor ve ya yanlis response donuyor")
